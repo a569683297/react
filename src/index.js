@@ -55,9 +55,15 @@ class Board extends React.Component {
 
 class Game extends React.Component {
   handleClick(i){
-	  const history = this.state.history.slice(0,this.state.stepNumber + 1);
+	  //这一步是为了,如果我们回到过去了,再次点击的时候,就会有问题,所以在历史记录的中截取从第0开始到当前步骤的数据
+	  //例如现在又1,2,3  3步,那么当我们回到了第二部,再次点击的时候,如果不截取就会造成,之前点击过的无法点击.
+	  // const history = this.state.history.slice(0,this.state.stepNumber + 1);
+	  const history = this.state.history;
+	  console.log(history);
 	  const current = history[history.length - 1];
+	  console.log(current);
 	  const squares = current.squares.slice();
+	  console.log(squares);
   	  if(calculateWinner(squares) || squares[i]){
   		  return
   	  }
@@ -71,6 +77,7 @@ class Game extends React.Component {
   	  });
   }
   jumpTo(step){
+	  console.log(step);
 	  this.setState({
 		  stepNumber:step,
 		  xIsNext:(step%2) === 0
