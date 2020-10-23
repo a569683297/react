@@ -17,33 +17,40 @@ export default class TicGame extends React.Component{
     }
 
     render() {
-        console.log(this.state.step)
         return (
             <div>
-                <Board dataSource={this.state.boardShowInfo} squareClick={this.squareClick}/>
-                <div>
-                    获胜方 : {this.state.winner ? this.state.winner : "锅盖"}
-                </div>
+                <Board dataSource={this.state.boardShowInfo} squareClick={this.squareClick} winnerInfo={this.state.winner}/>
+                <div>下一个玩家 : {this.state.isX ? "X" : "O"}</div>
+                <div>获胜方 : {this.state.winner ? this.state.winner.win : "锅盖"}</div>
                 <Step dataSource={this.state.step}/>
+                <div onClick={()=>this.reStart()}>重新开始</div>
             </div>
         )
     }
 
+    reStart(){
+        this.setState({
+            boardShowInfo:Array(9).fill(null),
+            isX:true,
+            winner:null,
+            step:[],
+        })
+    }
+
     squareClick(e){
-        console.log(e)
         const newBoardShowInfo = this.state.boardShowInfo
         newBoardShowInfo.splice(e.row*3 + e.col , 1 ,this.state.isX === true ? "X" : "O")
 
-        // 步骤
-        this.state.step.push(
-            {
-                use:this.state.isX ? "X":"O",
-                row:e.row,
-                col:e.col,
-            }
-        )
-
         if (!this.state.winner){
+            // 步骤
+            this.state.step.push(
+                {
+                    use:this.state.isX ? "X":"O",
+                    row:e.row,
+                    col:e.col,
+                }
+            )
+
             this.setState({
                 boardShowInfo:newBoardShowInfo,
                 isX:!this.state.isX,
@@ -51,11 +58,10 @@ export default class TicGame extends React.Component{
                 step:this.state.step,
             })
         }
-
     }
 
-
     calculateWinner(squares){
+
         const lines = [
             [0, 1, 2],
             [3, 4, 5],
@@ -69,10 +75,24 @@ export default class TicGame extends React.Component{
         for(let i = 0;i<lines.length;i++){
             const [a, b, c] = lines[i];
             if(squares[a] && squares[a] === squares[b] && squares[a] === squares[c]){
-                return squares[a]
+                const winner = {
+                    indexArr:[a,b,c],
+                    win: squares[a]
+                }
+                return winner
             }
 
         }
+
+        //检查是否平局
+        if (!squares.includes(null)){
+            const winner = {
+                indexArr:[],
+                win:"平局"
+            }
+            return winner
+        }
+
         return null
     }
 }
