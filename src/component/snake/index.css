@@ -1,0 +1,10 @@
+body,
+html {
+    margin: 0px;
+    font: 14px "Century Gothic", Futura, sans-serif;
+}
+
+.board {
+    background-color: #282c34;
+    position: relative;
+}
